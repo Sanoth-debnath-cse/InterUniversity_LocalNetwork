@@ -1,0 +1,65 @@
+<?php
+include("includes/connection.php");
+include("functions/function.php");
+?>
+<html>
+<head>
+    <title>Io chat</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body{
+            margin-top: 30px;
+
+        }
+        #messageArea{
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="messageArea" class="row">
+            <div class="col-md-4">
+                <div class="well">
+                    <h3>Online Users</h3>
+                    <ul class="list-group" id="users"></ul>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="chat" id="chat"></div>
+            <form id="messageForm">
+                <div class="form-group">
+                    <lebel>Enter Message</lebel>
+                    <textarea class="form-control" id="message">
+
+                    </textarea>
+                    <br/>
+                    <input type="submit" class="btn btn-primary" value="send message"/>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+<script>
+    $(function () {
+        var socket = io.connect();
+        var $messageForm = $('#messageForm');
+        var $message = $('#message');
+        var $chat =$('#chat');
+
+        $messageForm.submit(function (e) {
+            e.preventDefault();
+            socket.emit('send message',$message.val());
+            $message.val('');
+
+        });
+        socket.on('new message',function (data) {
+            $chat.append('<div class="well">' +data.msg+ '</div>');
+        });
+
+    });
+</script>
+</body>
+</html>
